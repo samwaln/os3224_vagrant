@@ -4,25 +4,6 @@
 
 char buf[512];
 
-// void
-// readline(int fd, int n, char* line, char* prevline, int* pos)
-// {
-//   if(pos>0){
-//     for(i=pos;i<n;i++){
-//
-//     }
-//   }
-//
-//   while((n=read(fd,buf,sizeof(buf)))>0){
-//     for(i=0;i)
-//   }
-//
-//   if(n < 0){
-//     printf(1, "uniq: read error\n");
-//     exit();
-//   }
-// }
-
 void
 uniq(int fd, int count, int dup, int lower)
 {
@@ -82,16 +63,44 @@ uniq(int fd, int count, int dup, int lower)
         }
         else{
           if(strcmp(prevline,line)!=0){
-            if(count==0 && dup==0){
+            if(count==0 && dup==0 && lower==0){
               printf(1,"%s",line);
             }
             else{
-              // printf(1,"%d",ct);
-              if(dup==1){
+              //make both lower case and compare
+              if(lower==1){
+                char tempprev[512];
+                char templine[512];
+                for(j=0; j<512; j++){
+                  if (prevline[j]=='\n'){
+                    break;
+                  }
+                  if ((prevline[j] >= 'A') && (prevline[j] <= 'Z')){
+                    tempprev[j] = prevline[j] + 32;
+                  }
+                }
+                for(j=0; j<100; j++){
+                  if (line[j]=='\n'){
+                    break;
+                  }
+                  if ((line[j] >= 'A') && (line[j] <= 'Z')){
+                    templine[j] = line[j] + 32;
+                  }
+                }
+                if(strcmp(tempprev,templine)==0){
+                  printf(1,"%s",line);
+                }
+                else{
+                  printf(1,"%s",prevline);
+                }
+              }
+              //only print if there are duplicate lines
+              else if(dup==1){
                 if(ct>1){
                   printf(1,"%s",prevline);
                 }
               }
+              //for the last line
               else if(i == n-1 && n<sizeof(buf)){
                 printf(1,"%d %s",ct,prevline);
                 printf(1,"%d %s",ct,line);
@@ -166,18 +175,6 @@ main(int argc, char* argv[])
       }
     }
   }
-  // for(i = 1; i < argc; i++){
-  //   if(argv[i][0]=='-'){
-  //     if(argv[i][1]=='c')
-  //       count = 1;
-  //     }
-  //     else if(argv[i][0]=='d'){
-  //       dup = 1;
-  //     }
-  //     if(argv[i][0]=='i'){
-  //       lower = 1;
-  //   }
-  // }
 
   for(i=1;i<argc;i++){
     if((fd = open(argv[1], 0)) >= 0){
