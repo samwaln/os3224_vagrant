@@ -173,10 +173,10 @@ UPROGS=\
 	_wc\
 	_zombie\
 	_hello\
-	_example\
+	_uniq\
 
 fs.img: mkfs README $(UPROGS)
-	./mkfs fs.img README $(UPROGS)
+	./mkfs fs.img example.txt README $(UPROGS)
 
 -include *.d
 
